@@ -1,5 +1,5 @@
 {
-  "name": "initative-solutions/secrets-manager",
+  "name": "initiative-solutions/secrets-manager",
   "autoload": {
     "psr-4": {
       "SecretsManager\\": "src/",
