@@ -1,5 +1,6 @@
 {
   "name": "initiative-solutions/secrets-manager",
+  "description": "Encrypt sensitive app data",
   "autoload": {
     "psr-4": {
       "SecretsManager\\": "src/",
@@ -15,7 +16,5 @@
   "require-dev": {
     "phpunit/phpunit": "^10.3"
   },
-  "bin": [
-    "bin/secretctl"
-  ]
+  "license": ["proprietary"]
 }

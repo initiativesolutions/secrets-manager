@@ -18,19 +18,12 @@ class Encrypt
     {
         $this->app = $app;
         $this->env = $env;
-
-        $this->filePath = $this->getSecretFilePath($app, $env);
     }
 
-    public function getFilePath(): string
-    {
-        return $this->filePath;
-    }
-
-    public function encryptSingleToken(string $token, string $value)
+    public function encryptSingleToken(string $token, string $value): void
     {
         $secrets = [];
-        $read = (new ReadFiles())->setFilePath($this->filePath);
+        $read = (new ReadFiles())->setFilePath($this->getFilePath());
 
         if ($read->fileExist()) {
             $secrets = $read->readJson();
@@ -41,15 +34,15 @@ class Encrypt
         $this->saveSecrets($secrets);
     }
 
-    public function encryptEntireFile(string $filePath)
+    public function encryptEntireFile(string $filePath): void
     {
 
     }
 
-    private function saveSecrets(array $secrets)
+    private function saveSecrets(array $secrets): void
     {
         (new WriteFiles())
-            ->setFilePath($this->filePath)
+            ->setFilePath($this->getFilePath())
             ->setData(json_encode($secrets))
             ->save();
     }
@@ -69,16 +62,20 @@ class Encrypt
         return base64_encode($iv . $encrypted);
     }
 
-    public function getSecretFilePath(string $app, string $env): string
+    public function getFilePath(): string
     {
-        $location = SecretsConfig::get('secrets_files.location');
-        $prefix = SecretsConfig::get('secrets_files.prefix');
+        if (empty($this->filePath)) {
+            $location = SecretsConfig::get('secrets_files.location');
+            $prefix = SecretsConfig::get('secrets_files.prefix');
 
-        if (empty($location)) {
-            throw new \Exception("Location for saving secrets files is empty from config.yaml [missing secrets_files.location]");
+            if (empty($location)) {
+                throw new \Exception("Location for saving secrets files is empty from config.yaml [missing secrets_files.location]");
+            }
+
+            $this->filePath = rtrim($location, '/') . "/$prefix{$this->env}_$this->app.json";
         }
 
-        return rtrim($location, '/') . "/$prefix{$env}_$app.json";
+        return $this->filePath;
     }
 
 }
