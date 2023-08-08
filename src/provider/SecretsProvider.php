@@ -2,14 +2,15 @@
 
 namespace SecretsManager\Provider;
 
-use SecretsManager\FileAccess\Storage;
+use SecretsManager\FileAccess\ReadFiles;
 
 class SecretsProvider
 {
 
     public function decrypt()
     {
-        $storage = new Storage();
+
+        $storage = new ReadFiles();
     }
 
 }
