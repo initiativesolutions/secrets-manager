@@ -3,7 +3,7 @@
   "autoload": {
     "psr-4": {
       "SecretsManager\\": "src/",
-      "SecretsTests\\": "tests/"
+      "Tests\\": "tests/"
     }
   },
   "require": {
@@ -13,5 +13,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^10.3"
-  }
+  },
+  "bin": [
+    "bin/secretctl"
+  ]
 }

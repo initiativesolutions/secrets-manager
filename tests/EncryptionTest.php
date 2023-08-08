@@ -1,12 +1,11 @@
 <?php
 
-namespace SecretsTests;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use SecretsManager\Actions\SecretsEncryption;
-use SecretsTests\Mocked\SecretsCommandLineMocked;
+use SecretsManager\Guard\Encrypt;
 
-class SecretsEncryptionTest extends TestCase
+class EncryptionTest extends TestCase
 {
 
     public function testEncryptSingleToken()
@@ -15,14 +14,11 @@ class SecretsEncryptionTest extends TestCase
         $value = "123456";
         $app = "secrets-app";
         $env = "test";
-        $args = ["bin/secretctl", "encrypt", $token, "-app=$app", "-env=$env"];
 
-        $cli = (new SecretsCommandLineMocked($args))
-            ->setMockedRead($value);
+        $encrypt = new Encrypt($app, $env);
+        $encrypt->encryptSingleToken($token, $value);
 
-        $encrypt = new SecretsEncryption($cli);
-        $encrypt->run();
-        $filePath = $encrypt->getSecretFilePath($app, $env);
+        $filePath = $encrypt->getFilePath();
 
         $this->assertFileExists($filePath);
         $this->assertFileIsReadable($filePath);

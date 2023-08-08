@@ -1,11 +1,12 @@
 <?php
 
-namespace SecretsTests;
+namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use SecretsManager\SecretsStorage;
+use SecretsManager\FileAccess\ReadFiles;
+use SecretsManager\FileAccess\WriteFiles;
 
-class SecretsStorageTest extends TestCase
+class FileAccessTest extends TestCase
 {
 
     public function testSave()
@@ -25,7 +26,7 @@ class SecretsStorageTest extends TestCase
 
         $this->createAndAssertFile($random, $filePath);
 
-        $data = (new SecretsStorage())
+        $data = (new ReadFiles())
             ->setFilePath($filePath)
             ->read();
 
@@ -40,7 +41,7 @@ class SecretsStorageTest extends TestCase
 
         $this->createAndAssertFile("", $filePath);
 
-        $data = (new SecretsStorage())
+        $data = (new ReadFiles())
             ->setFilePath($filePath)
             ->read();
 
@@ -56,7 +57,7 @@ class SecretsStorageTest extends TestCase
 
         $this->createAndAssertFile(json_encode($jsonData), $filePath);
 
-        $data = (new SecretsStorage())
+        $data = (new ReadFiles())
             ->setFilePath($filePath)
             ->readJson();
 
@@ -67,10 +68,9 @@ class SecretsStorageTest extends TestCase
 
     private function createAndAssertFile($data, $filePath)
     {
-        (new SecretsStorage())
+        (new WriteFiles())
             ->setData($data)
             ->setFilePath($filePath)
-            ->setWriteMode('w')
             ->save();
 
         $this->assertFileExists($filePath);

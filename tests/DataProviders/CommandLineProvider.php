@@ -1,8 +1,8 @@
 <?php
 
-namespace SecretsTests\Providers;
+namespace Tests\DataProviders;
 
-class SecretsCommandLineProvider
+class CommandLineProvider
 {
 
     public static function parseArgsAndOptsProvider(): array

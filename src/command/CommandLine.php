@@ -1,8 +1,8 @@
 <?php
 
-namespace SecretsManager;
+namespace SecretsManager\Command;
 
-class SecretsCommandLine
+class CommandLine
 {
     private array $argv;
     private array $args = [];
