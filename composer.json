@@ -1,6 +1,7 @@
 {
   "name": "initiativesolutions/secrets-manager",
   "description": "Encrypt sensitive app data",
+  "version": "1.0.0",
   "autoload": {
     "psr-4": {
       "SecretsManager\\": "src/",
