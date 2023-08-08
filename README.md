@@ -36,7 +36,7 @@ Here are the available commands in the application:
 
 - `bin/secretctl encrypt [TOKEN_NAME] -app [application name] -env [environnement name]`: Encrypts token one by one.
 
-- `bin/secretctl encrypt -file [file path to .env] -app [application name] -env [environnement name] [--remove-file]`: Encrypts entire file by passing path (you can use --remove-file to delete .env file after encryption)
+- `bin/secretctl encrypt -file [file path to .env] -app [application name] -env [environnement name] [--remove-file]`: Encrypts json file by passing path (you can use --remove-file to delete .env file after encryption)
 
 - `bin/secretctl rotate`: Re-encrypts tokens and generates a new security key. This command re-runs the `keygen` and `encrypt` commands.
 

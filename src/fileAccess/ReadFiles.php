@@ -8,13 +8,13 @@ class ReadFiles implements FileAccessInterface
     private string $mode = 'r';
     private string $filePath;
 
-    public function setFilePath(string $filePath): FileAccessInterface
+    public function setFilePath(string $filePath): ReadFiles
     {
         $this->filePath = $filePath;
         return $this;
     }
 
-    public function setAccessMode(string $mode): FileAccessInterface
+    public function setAccessMode(string $mode): ReadFiles
     {
         $this->mode = $mode;
         return $this;

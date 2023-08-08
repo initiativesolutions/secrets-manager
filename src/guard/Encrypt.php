@@ -34,9 +34,15 @@ class Encrypt
         $this->saveSecrets($secrets);
     }
 
-    public function encryptEntireFile(string $filePath): void
+    public function encryptJsonFile(string $filePath): void
     {
+        $tokens = (new ReadFiles())
+            ->setFilePath($filePath)
+            ->readJson();
 
+        $secrets = array_map(fn ($value) => $this->encryptValue($value), $tokens);
+
+        $this->saveSecrets($secrets);
     }
 
     private function saveSecrets(array $secrets): void

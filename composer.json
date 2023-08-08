@@ -8,7 +8,7 @@
       "SecretsManager\\": "src/",
       "Tests\\": "tests/"
     },
-    "exclude-from-classmap": ["**/tests/**", "**/command/**", "**/key/**", "**/guard/**"]
+    "exclude-from-classmap": ["**/tests/**"]
   },
   "require": {
     "symfony/yaml": "^6.3",

@@ -9,19 +9,19 @@ class WriteFiles implements FileAccessInterface
     private string $data = '';
     private string $filePath;
 
-    public function setData(string $data): FileAccessInterface
+    public function setData(string $data): WriteFiles
     {
         $this->data = $data;
         return $this;
     }
 
-    public function setFilePath(string $filePath): FileAccessInterface
+    public function setFilePath(string $filePath): WriteFiles
     {
         $this->filePath = $filePath;
         return $this;
     }
 
-    public function setAccessMode(string $mode): FileAccessInterface
+    public function setAccessMode(string $mode): WriteFiles
     {
         $this->mode = $mode;
         return $this;
