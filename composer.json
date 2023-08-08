@@ -1,5 +1,5 @@
 {
-  "name": "initiative-solutions/secrets-manager",
+  "name": "initiativesolutions/secrets-manager",
   "description": "Encrypt sensitive app data",
   "autoload": {
     "psr-4": {
