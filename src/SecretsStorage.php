@@ -64,7 +64,7 @@ class SecretsStorage
         }
 
         $handle = fopen($this->filePath, $this->readMode);
-        $contents = fread($handle, filesize($this->filePath));
+        $contents = ($size = filesize($this->filePath)) ? fread($handle, $size) : "";
         fclose($handle);
 
         return $contents;

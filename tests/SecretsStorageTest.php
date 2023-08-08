@@ -34,6 +34,21 @@ class SecretsStorageTest extends TestCase
         unlink($filePath); // delete file after test
     }
 
+    public function testReadEmptyFile()
+    {
+        $filePath = __DIR__ . '/file-for-test.txt';
+
+        $this->createAndAssertFile("", $filePath);
+
+        $data = (new SecretsStorage())
+            ->setFilePath($filePath)
+            ->read();
+
+        $this->assertEquals("", $data);
+
+        unlink($filePath); // delete file after test
+    }
+
     public function testReadJson()
     {
         $jsonData = ['key1' => 'value1'];

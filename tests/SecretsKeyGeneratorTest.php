@@ -20,4 +20,12 @@ class SecretsKeyGeneratorTest extends TestCase
         $this->assertFileIsReadable($filePath);
     }
 
+    public function testGetSecretKey()
+    {
+        $keygen = new SecretsKeyGenerator(new SecretsCommandLine([]));
+        $keygen->run();
+
+        $this->assertGreaterThan(0, strlen($keygen->getSecretKey()), "Secret key is empty, check [SecretsKeyGenerator::getSecretKey]");
+    }
+
 }

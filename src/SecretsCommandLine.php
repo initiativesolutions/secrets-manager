@@ -2,7 +2,7 @@
 
 namespace SecretsManager;
 
-final class SecretsCommandLine
+class SecretsCommandLine
 {
     private array $argv;
     private array $args = [];
@@ -77,6 +77,9 @@ final class SecretsCommandLine
         return $this->opts;
     }
 
-
+    public function read(?string $promptMessage): string
+    {
+        return readline($promptMessage);
+    }
 
 }

@@ -19,11 +19,6 @@ class SecretsKeyGenerator implements SecretsActionInterface
     public function run(): void
     {
         $filePath = $this->getKeyFilePath();
-
-        if (empty($filePath)) {
-            throw new \Exception("Location for saving secret key is empty from config.yaml [missing locations.encryption_key]");
-        }
-
         $encryptionKey = bin2hex(random_bytes(32));
 
         (new SecretsStorage())
@@ -40,10 +35,19 @@ class SecretsKeyGenerator implements SecretsActionInterface
         $filename = SecretsConfig::get('encryption_key.file_name');
 
         if (empty($location) || empty($filename)) {
-            return '';
+            throw new \Exception("Location for saving secret key is empty from config.yaml [missing encryption_key.location]");
         }
 
         return rtrim($location, '/') . '/' . ltrim($filename, '/');
+    }
+
+    public function getSecretKey(): string
+    {
+        $filePath = $this->getKeyFilePath();
+
+        return (new SecretsStorage())
+            ->setFilePath($filePath)
+            ->read();
     }
 
 }
