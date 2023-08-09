@@ -7,10 +7,23 @@ use SecretsManager\FileAccess\ReadFiles;
 class SecretsProvider
 {
 
-    public function decrypt()
+    /**
+     * @param string $secretKeyPath path encrypted key
+     * @param string $secretsTokensPath path to secrets json tokens
+     */
+    public function decrypt(string $secretKeyPath, string $secretsTokensPath): array
     {
+        $secretKey = (new ReadFiles())
+            ->setFilePath($secretKeyPath)
+            ->read();
 
-        $storage = new ReadFiles();
+        $secretTokens = (new ReadFiles())
+            ->setFilePath($secretsTokensPath)
+            ->readJson();
+
+        // todo change, just for test
+
+        return [$secretKey, $secretTokens];
     }
 
 }
