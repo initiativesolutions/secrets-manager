@@ -18,7 +18,7 @@ class EncryptionTest extends TestCase
         $encrypt = new Encrypt($app, $env);
         $encrypt->encryptSingleToken($token, $value);
 
-        $this->assertSecretsFile($encrypt, [$token => $value]);
+        $this->assertSecretsFile($encrypt, [$token]);
     }
 
     public function testEncryptJsonFile()
@@ -33,7 +33,24 @@ class EncryptionTest extends TestCase
         $encrypt = new Encrypt($app, $env);
         $encrypt->encryptJsonFile($filePath);
 
-        $this->assertSecretsFile($encrypt, $tokens);
+        $this->assertSecretsFile($encrypt, array_keys($tokens));
+
+        unlink($filePath);
+    }
+
+    public function testEncryptJsonFileAndDelete()
+    {
+        $app = "secrets-app";
+        $env = "test";
+        $tokens = ["GITHUB_TOKEN" => "123456", "NPM_TOKEN" => "789456"];
+        $filePath = __DIR__ . '/file-for-test.json';
+
+        file_put_contents($filePath, json_encode($tokens));
+
+        $encrypt = new Encrypt($app, $env);
+        $encrypt->encryptJsonFile($filePath, true);
+
+        $this->assertFileDoesNotExist($filePath);
     }
 
     public function testTwoTimesEncrypt()
@@ -42,19 +59,19 @@ class EncryptionTest extends TestCase
         $env = "test";
         $firstToken = "GITHUB_TOKEN";
         $firstValue = "123456";
-        $secondToken = "GITHUB_TOKEN";
-        $secondValue = "123456";
+        $secondToken = "NPM_TOKEN";
+        $secondValue = "PDKJ-5955-UDHJU";
 
         $encrypt = new Encrypt($app, $env);
         // first time
         $encrypt->encryptSingleToken($firstToken, $firstValue);
 
-        $this->assertSecretsFile($encrypt, [$firstToken => $firstValue], false);
+        $this->assertSecretsFile($encrypt, [$firstToken], false);
 
         // second time
         $encrypt->encryptSingleToken($secondToken, $secondValue);
 
-        $this->assertSecretsFile($encrypt, [$firstToken => $firstValue, $secondToken => $secondValue]);
+        $this->assertSecretsFile($encrypt, [$firstToken, $secondToken]);
     }
 
     private function assertSecretsFile(Encrypt $encrypt, array $tokens, bool $deleteFile = true)
@@ -70,7 +87,7 @@ class EncryptionTest extends TestCase
 
         $json = json_decode($content, true);
 
-        foreach ($tokens as $token => $value) {
+        foreach ($tokens as $token) {
             $this->assertArrayHasKey($token, $json);
             $this->assertNotEmpty($json[$token]);
         }

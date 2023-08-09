@@ -2,6 +2,7 @@
 
 namespace SecretsManager\Guard;
 
+use SecretsManager\FileAccess\DeleteFiles;
 use SecretsManager\FileAccess\ReadFiles;
 use SecretsManager\FileAccess\WriteFiles;
 use SecretsManager\Key\SecretKey;
@@ -34,7 +35,7 @@ class Encrypt
         $this->saveSecrets($secrets);
     }
 
-    public function encryptJsonFile(string $filePath): void
+    public function encryptJsonFile(string $filePath, bool $removeFile = false): void
     {
         $tokens = (new ReadFiles())
             ->setFilePath($filePath)
@@ -43,6 +44,12 @@ class Encrypt
         $secrets = array_map(fn ($value) => $this->encryptValue($value), $tokens);
 
         $this->saveSecrets($secrets);
+
+        if ($removeFile) {
+            (new DeleteFiles())
+                ->setFilePath($filePath)
+                ->delete();
+        }
     }
 
     private function saveSecrets(array $secrets): void

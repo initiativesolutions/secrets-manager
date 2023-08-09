@@ -34,7 +34,7 @@ class Encryption implements CommandInterface
         $encrypt = new Encrypt($opts['app'], $opts['env']);
 
         if (!empty($opts['file'])) {
-            $encrypt->encryptJsonFile($opts['file']);
+            $encrypt->encryptJsonFile($opts['file'], isset($opts['remove-file']));
         } else {
             $token = array_shift($args);
             $value = $this->cli->read("Set value for [$token] : ");
