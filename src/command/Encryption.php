@@ -41,7 +41,7 @@ class Encryption implements CommandInterface
             $encrypt->encryptSingleToken($token, $value);
         }
 
-        $this->cli->info("Encrypt work [location = {$encrypt->getFilePath()}]");
+        $this->cli->success("Success ! Secrets saved here [{$encrypt->getFilePath()}]");
     }
 
 }
