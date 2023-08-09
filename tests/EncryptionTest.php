@@ -2,10 +2,9 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use SecretsManager\Guard\Encrypt;
 
-class EncryptionTest extends TestCase
+class EncryptionTest extends SecretsTestCase
 {
 
     public function testEncryptSingleToken()
@@ -26,7 +25,7 @@ class EncryptionTest extends TestCase
         $app = "secrets-app";
         $env = "test";
         $tokens = ["GITHUB_TOKEN" => "123456", "NPM_TOKEN" => "789456"];
-        $filePath = __DIR__ . '/file-for-test.json';
+        $filePath = self::$fakeJsonFile;
 
         file_put_contents($filePath, json_encode($tokens));
 
@@ -34,8 +33,6 @@ class EncryptionTest extends TestCase
         $encrypt->encryptJsonFile($filePath);
 
         $this->assertSecretsFile($encrypt, array_keys($tokens));
-
-        unlink($filePath);
     }
 
     public function testEncryptJsonFileAndDelete()
@@ -43,7 +40,7 @@ class EncryptionTest extends TestCase
         $app = "secrets-app";
         $env = "test";
         $tokens = ["GITHUB_TOKEN" => "123456", "NPM_TOKEN" => "789456"];
-        $filePath = __DIR__ . '/file-for-test.json';
+        $filePath = self::$fakeJsonFile;
 
         file_put_contents($filePath, json_encode($tokens));
 
@@ -66,7 +63,7 @@ class EncryptionTest extends TestCase
         // first time
         $encrypt->encryptSingleToken($firstToken, $firstValue);
 
-        $this->assertSecretsFile($encrypt, [$firstToken], false);
+        $this->assertSecretsFile($encrypt, [$firstToken]);
 
         // second time
         $encrypt->encryptSingleToken($secondToken, $secondValue);
@@ -74,7 +71,7 @@ class EncryptionTest extends TestCase
         $this->assertSecretsFile($encrypt, [$firstToken, $secondToken]);
     }
 
-    private function assertSecretsFile(Encrypt $encrypt, array $tokens, bool $deleteFile = true)
+    private function assertSecretsFile(Encrypt $encrypt, array $tokens)
     {
         $filePath = $encrypt->getFilePath();
 
@@ -90,10 +87,6 @@ class EncryptionTest extends TestCase
         foreach ($tokens as $token) {
             $this->assertArrayHasKey($token, $json);
             $this->assertNotEmpty($json[$token]);
-        }
-
-        if ($deleteFile) {
-            unlink($filePath); // remove file for test
         }
     }
 

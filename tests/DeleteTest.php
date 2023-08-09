@@ -2,12 +2,11 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use SecretsManager\FileAccess\ReadFiles;
 use SecretsManager\Guard\Delete;
 use SecretsManager\Guard\Encrypt;
 
-class DeleteTest extends TestCase
+class DeleteTest extends SecretsTestCase
 {
 
     public function testDelete()

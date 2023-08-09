@@ -2,27 +2,21 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use SecretsManager\FileAccess\ReadFiles;
 use SecretsManager\FileAccess\WriteFiles;
 
-class FileAccessTest extends TestCase
+class FileAccessTest extends SecretsTestCase
 {
 
     public function testSave()
     {
-        $random = uniqid();
-        $filePath = __DIR__ . '/file-for-test.txt';
-
-        $this->createAndAssertFile($random, $filePath);
-
-        unlink($filePath); // delete file after test
+        $this->createAndAssertFile(uniqid(), self::$fakeTextFile);
     }
 
     public function testRead()
     {
         $random = uniqid();
-        $filePath = __DIR__ . '/file-for-test.txt';
+        $filePath = self::$fakeTextFile;
 
         $this->createAndAssertFile($random, $filePath);
 
@@ -31,13 +25,11 @@ class FileAccessTest extends TestCase
             ->read();
 
         $this->assertEquals($random, $data);
-
-        unlink($filePath); // delete file after test
     }
 
     public function testReadEmptyFile()
     {
-        $filePath = __DIR__ . '/file-for-test.txt';
+        $filePath = self::$fakeTextFile;
 
         $this->createAndAssertFile("", $filePath);
 
@@ -46,14 +38,12 @@ class FileAccessTest extends TestCase
             ->read();
 
         $this->assertEquals("", $data);
-
-        unlink($filePath); // delete file after test
     }
 
     public function testReadJson()
     {
         $jsonData = ['key1' => 'value1'];
-        $filePath = __DIR__ . '/file-for-test.json';
+        $filePath = self::$fakeJsonFile;
 
         $this->createAndAssertFile(json_encode($jsonData), $filePath);
 
@@ -62,8 +52,6 @@ class FileAccessTest extends TestCase
             ->readJson();
 
         $this->assertEquals($jsonData, $data);
-
-        unlink($filePath); // delete file after test
     }
 
     private function createAndAssertFile($data, $filePath)

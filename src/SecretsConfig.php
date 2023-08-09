@@ -7,9 +7,11 @@ use Symfony\Component\Yaml\Yaml;
 class SecretsConfig
 {
 
+    public static string $configPath = __DIR__ . '/../config.yaml';
+
     public static function get(string $key): ?string
     {
-        $config = Yaml::parseFile( __DIR__ . '/../config.yaml');
+        $config = Yaml::parseFile(self::$configPath);
         $explode = explode('.', $key);
 
         foreach ($explode as $k) {

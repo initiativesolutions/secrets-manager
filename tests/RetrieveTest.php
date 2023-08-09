@@ -2,11 +2,10 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use SecretsManager\Guard\Encrypt;
 use SecretsManager\Guard\Retrieve;
 
-class RetrieveTest extends TestCase
+class RetrieveTest extends SecretsTestCase
 {
 
     public function testGetTokens()
@@ -27,8 +26,6 @@ class RetrieveTest extends TestCase
         foreach ($tokens as $token => $value) {
             $this->assertArrayHasKey($token, $data);
         }
-
-        unlink($encrypt->getFilePath());
     }
 
 }

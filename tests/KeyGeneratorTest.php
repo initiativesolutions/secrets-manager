@@ -2,10 +2,9 @@
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
 use SecretsManager\Key\SecretKey;
 
-class KeyGeneratorTest extends TestCase
+class KeyGeneratorTest extends SecretsTestCase
 {
 
     public function testGenerate()

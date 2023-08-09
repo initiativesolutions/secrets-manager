@@ -2,6 +2,8 @@
 
 namespace SecretsManager\Command;
 
+use SecretsManager\Guard\Rotate;
+
 class Rotation implements CommandInterface
 {
 
@@ -14,6 +16,13 @@ class Rotation implements CommandInterface
 
     public function run(): void
     {
-        // TODO: Implement run() method.
+        $files = (new Rotate())->rotate();
+
+        $this->cli->success("The rotation was successful");
+        $this->cli->write("The secret key has been re-generated");
+
+        foreach ($files as $file) {
+            $this->cli->write("- has been re-encrypted : [$file]");
+        }
     }
 }

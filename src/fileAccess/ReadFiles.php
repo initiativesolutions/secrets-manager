@@ -14,6 +14,11 @@ class ReadFiles implements FileAccessInterface
         return $this;
     }
 
+    public function getFilePath(): string
+    {
+        return $this->filePath;
+    }
+
     public function setAccessMode(string $mode): ReadFiles
     {
         $this->mode = $mode;
@@ -44,6 +49,24 @@ class ReadFiles implements FileAccessInterface
     public function fileExist(): bool
     {
         return file_exists($this->filePath);
+    }
+
+    /**
+     * @param string $directory path to directory
+     * @return ReadFiles[] array of each file with data
+     */
+    public static function getDirectory(string $directory): array
+    {
+        $data = [];
+
+        if (is_dir($directory)) {
+            $data = array_map(
+                fn($file) => (new self())->setFilePath(rtrim($directory, '/') . '/' . $file),
+                array_diff(scandir($directory), ['.', '..'])
+            );
+        }
+
+        return $data;
     }
 
 }

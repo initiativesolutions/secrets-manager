@@ -23,11 +23,14 @@ class SecretKey
 
     public function retrieve(): string
     {
-        $filePath = $this->getKeyFilePath();
+        $storage = (new ReadFiles())
+            ->setFilePath($this->getKeyFilePath());
 
-        return (new ReadFiles())
-            ->setFilePath($filePath)
-            ->read();
+        if (!$storage->fileExist()) {
+            $this->generate();
+        }
+
+        return $storage->read();
     }
 
     public function generate(): string

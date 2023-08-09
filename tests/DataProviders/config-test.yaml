@@ -1,0 +1,8 @@
+encryption_key:
+  location: ./tests/keys-for-test/secrets-manager/encryption
+  file_name: encrypt.key
+secrets_files:
+  location: ./tests/keys-for-test/secrets-manager/secrets
+  prefix: secrets_
+encrypt:
+  algorithm: aes256

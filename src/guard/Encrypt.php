@@ -41,6 +41,10 @@ class Encrypt extends Guard
         $secret = (new SecretKey())->retrieve();
         $algo = SecretsConfig::get('encrypt.algorithm');
 
+        if (empty($secret)) {
+            throw new \Exception("Secret key empty, it's needed to encrypt tokens");
+        }
+
         if (!in_array($algo, openssl_get_cipher_methods(true), true)) {
             throw new \Exception('Unknown algorithm [in config.yaml]. For a list of supported algorithms visit: (https://secure.php.net/manual/en/function.openssl-get-cipher-methods.php)');
         }

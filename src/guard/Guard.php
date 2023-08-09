@@ -18,6 +18,12 @@ abstract class Guard
         $this->env = $env;
     }
 
+    public function setFilePath(string $filePath): Guard
+    {
+        $this->filePath = $filePath;
+        return $this;
+    }
+
     public function getFilePath(): string
     {
         if (empty($this->filePath)) {
