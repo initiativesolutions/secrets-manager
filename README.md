@@ -48,7 +48,7 @@ Here are the available commands in the application:
 
 - `bin/secretctl encrypt [TOKEN_NAME] -app [APPLICATION_NAME] -env [ENVIRONNEMENT_NAME]`: Encrypts token one by one.
 
-- `bin/secretctl encrypt -file [file path to .env] -app [APPLICATION_NAME] -env [ENVIRONNEMENT_NAME] [--remove-file]`: Encrypts json file by passing path (you can use --remove-file to delete .json file after encryption)
+- `bin/secretctl encrypt -file [PATH_TO_JSON_TOKENS] -app [APPLICATION_NAME] -env [ENVIRONNEMENT_NAME] [--remove-file]`: Encrypts json file by passing path (you can use --remove-file to delete .json file after encryption)
 
 - `bin/secretctl rotate`: Re-encrypts tokens and generates a new security key.
 
@@ -57,6 +57,8 @@ Here are the available commands in the application:
 - `bin/secretctl list -app [APPLICATION_NAME] -env [ENVIRONNEMENT_NAME]`: List tokens.
 
 - `bin/secretctl help`: See help for all commands
+
+> If you have a problem when running `bin/secretctl` then run : `dos2unix bin/secretctl` or `chmod +x bin/secretctl`
 
 ### For tokens provider
 

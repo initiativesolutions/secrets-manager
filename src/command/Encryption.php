@@ -3,6 +3,7 @@
 namespace SecretsManager\Command;
 
 use SecretsManager\Guard\Encrypt;
+use SecretsManager\Key\SecretKey;
 
 class Encryption implements CommandInterface
 {
@@ -42,6 +43,10 @@ class Encryption implements CommandInterface
         }
 
         $this->cli->success("Success ! Secrets saved here [{$encrypt->getFilePath()}]");
+
+        $secretKeyPath = (new SecretKey())->getKeyFilePath();
+
+        $this->cli->info("With secret key [$secretKeyPath]");
     }
 
 }
