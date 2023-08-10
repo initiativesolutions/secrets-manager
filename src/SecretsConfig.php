@@ -2,6 +2,7 @@
 
 namespace SecretsManager;
 
+use SecretsManager\Exception\ConfigKeyMissingException;
 use Symfony\Component\Yaml\Yaml;
 
 class SecretsConfig
@@ -18,7 +19,7 @@ class SecretsConfig
             if (isset($config[$k])) {
                 $config = $config[$k];
             } else {
-                throw new \Exception("key not found in config.yaml [$key]");
+                throw new ConfigKeyMissingException($key);
             }
         }
 

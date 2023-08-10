@@ -1,12 +1,13 @@
 <?php
 
-namespace SecretsManager\Key;
+namespace SecretsManager\SecurityKey;
 
+use SecretsManager\Exception\ConfigKeyMissingException;
 use SecretsManager\FileAccess\ReadFiles;
 use SecretsManager\FileAccess\WriteFiles;
 use SecretsManager\SecretsConfig;
 
-class SecretKey
+class KeyVault
 {
 
     public function getKeyFilePath(): string
@@ -14,20 +15,28 @@ class SecretKey
         $location = SecretsConfig::get('encryption_key.location');
         $filename = SecretsConfig::get('encryption_key.file_name');
 
-        if (empty($location) || empty($filename)) {
-            throw new \Exception("Location for saving secret key is empty from config.yaml [missing encryption_key.location]");
+        if (empty($location)) {
+            throw new ConfigKeyMissingException("encryption_key.location");
+        }
+
+        if (empty($filename)) {
+            throw new ConfigKeyMissingException("encryption_key.file_name");
         }
 
         return rtrim($location, '/') . '/' . ltrim($filename, '/');
     }
 
-    public function retrieve(): string
+    public function retrieve($generateIfEmpty = true): string
     {
         $storage = (new ReadFiles())
             ->setFilePath($this->getKeyFilePath());
 
         if (!$storage->fileExist()) {
-            $this->generate();
+            if ($generateIfEmpty) {
+                $this->generate();
+            } else {
+                return "";
+            }
         }
 
         return $storage->read();

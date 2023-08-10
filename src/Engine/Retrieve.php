@@ -1,10 +1,10 @@
 <?php
 
-namespace SecretsManager\Guard;
+namespace SecretsManager\Engine;
 
 use SecretsManager\FileAccess\ReadFiles;
 
-class Retrieve extends Guard
+class Retrieve extends Engine
 {
 
     public function getTokens(): array

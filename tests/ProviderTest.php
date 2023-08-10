@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use SecretsManager\Guard\Encrypt;
-use SecretsManager\Key\SecretKey;
+use SecretsManager\Engine\Encrypt;
+use SecretsManager\SecurityKey\KeyVault;
 use SecretsManager\Provider\SecretsProvider;
 
 class ProviderTest extends SecretsTestCase
@@ -20,7 +20,7 @@ class ProviderTest extends SecretsTestCase
         $encrypt->encryptSingleToken($token, $value);
 
         $tokens = (new SecretsProvider())
-            ->decrypt((new SecretKey())->getKeyFilePath(), $encrypt->getFilePath());
+            ->decryptByFiles((new KeyVault())->getKeyFilePath(), $encrypt->getFilePath());
 
         $this->assertEquals(["$token" => $value], $tokens, "Tokens decrypt failed ! check here SecretsProvider::decrypt");
     }

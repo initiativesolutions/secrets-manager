@@ -12,7 +12,7 @@ class SecretsProvider
      * @param string $secretKeyPath path encrypted key
      * @param string $secretsTokensPath path to secrets json tokens
      */
-    public function decrypt(string $secretKeyPath, string $secretsTokensPath, string $algo = null): array
+    public function decryptByFiles(string $secretKeyPath, string $secretsTokensPath, string $algo = null): array
     {
         if (is_null($algo)) {
             $algo = SecretsConfig::get('encrypt.algorithm');
@@ -26,10 +26,10 @@ class SecretsProvider
             ->setFilePath($secretsTokensPath)
             ->readJson();
 
-        return $this->decryptWithValues($secretKey, $secretTokens, $algo);
+        return $this->decryptByTokens($secretKey, $secretTokens, $algo);
     }
 
-    public function decryptWithValues(string $secretKey, array $secretsTokens, string $algo = null): array
+    public function decryptByTokens(string $secretKey, array $secretsTokens, string $algo = null): array
     {
         if (is_null($algo)) {
             $algo = SecretsConfig::get('encrypt.algorithm');

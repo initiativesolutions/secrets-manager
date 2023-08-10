@@ -2,6 +2,8 @@
 
 namespace SecretsManager\FileAccess;
 
+use SecretsManager\Exception\NoFilePermissionException;
+
 class WriteFiles implements FileAccessInterface
 {
 
@@ -36,14 +38,14 @@ class WriteFiles implements FileAccessInterface
             $success = mkdir($directory, 0777, true);
 
             if (!$success) {
-                throw new \Exception("You don't have the permission to use mkdir [$this->filePath]");
+                throw new NoFilePermissionException("You don't have the permission to use mkdir [$this->filePath]");
             }
         }
 
         $stream = fopen($this->filePath, $this->mode);
 
         if (!$stream) {
-            throw new \Exception("You don't have the permission to write to this file [$this->filePath]");
+            throw new NoFilePermissionException("You don't have the permission to write to this file [$this->filePath]");
         }
 
         fwrite($stream, $this->data);

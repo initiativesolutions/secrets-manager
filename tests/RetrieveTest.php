@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use SecretsManager\Guard\Encrypt;
-use SecretsManager\Guard\Retrieve;
+use SecretsManager\Engine\Encrypt;
+use SecretsManager\Engine\Retrieve;
 
 class RetrieveTest extends SecretsTestCase
 {

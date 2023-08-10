@@ -2,6 +2,8 @@
 
 namespace SecretsManager\FileAccess;
 
+use SecretsManager\Exception\NoFilePermissionException;
+
 class ReadFiles implements FileAccessInterface
 {
 
@@ -28,7 +30,7 @@ class ReadFiles implements FileAccessInterface
     public function read(): string
     {
         if (!$this->filePath || !$this->fileExist()) {
-            throw new \Exception("You can't read, filePath wrong or file not exist [$this->filePath]");
+            throw new NoFilePermissionException("You can't read, filePath wrong or file not exist [$this->filePath]");
         }
 
         $handle = fopen($this->filePath, $this->mode);
@@ -55,7 +57,7 @@ class ReadFiles implements FileAccessInterface
      * @param string $directory path to directory
      * @return ReadFiles[] array of each file with data
      */
-    public static function getDirectory(string $directory): array
+    public static function getReadableFiles(string $directory): array
     {
         $data = [];
 

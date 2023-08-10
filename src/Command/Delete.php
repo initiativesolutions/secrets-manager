@@ -2,7 +2,9 @@
 
 namespace SecretsManager\Command;
 
-use SecretsManager\Guard\Delete as DeleteGuard;
+use SecretsManager\Engine\Delete as DeleteEngine;
+use SecretsManager\Exception\CommandArgumentMissingException;
+use SecretsManager\Exception\CommandOptionMissingException;
 
 class Delete implements CommandInterface
 {
@@ -20,19 +22,19 @@ class Delete implements CommandInterface
         $opts = $this->cli->getOpts();
 
         if (!array_key_exists('app', $opts)) {
-            throw new \Exception('[app] option is missing !');
+            throw new CommandOptionMissingException("app");
         }
 
         if (!array_key_exists('env', $opts)) {
-            throw new \Exception('[env] option is missing !');
+            throw new CommandOptionMissingException("env");
         }
 
         if (empty($args)) {
-            throw new \Exception('Token name is missing !');
+            throw new CommandArgumentMissingException("[TOKEN_NAME]");
         }
 
         $token = array_shift($args);
-        $delete = (new DeleteGuard($opts['app'], $opts['env']));
+        $delete = (new DeleteEngine($opts['app'], $opts['env']));
         $delete->delete($token);
 
         $this->cli->success("Token [$token] has been deleted from [{$delete->getFilePath()}]");

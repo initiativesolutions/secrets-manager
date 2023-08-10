@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use SecretsManager\Guard\Encrypt;
+use SecretsManager\Engine\Encrypt;
 
 class EncryptionTest extends SecretsTestCase
 {

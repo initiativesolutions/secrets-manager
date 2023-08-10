@@ -1,8 +1,10 @@
 <?php
 
-namespace SecretsManager\Guard;
+namespace SecretsManager\Engine;
 
-class Delete extends Guard
+use SecretsManager\Exception\NoSecretTokenException;
+
+class Delete extends Engine
 {
 
     public function delete(string $token)
@@ -13,7 +15,7 @@ class Delete extends Guard
             unset($secrets[$token]);
             $this->saveSecrets($secrets);
         } else {
-            throw new \Exception("Can't delete token ! [$token] not exist here [{$this->getFilePath()}]");
+            throw new NoSecretTokenException($token, $this->getFilePath());
         }
     }
 

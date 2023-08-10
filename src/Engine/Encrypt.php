@@ -1,13 +1,15 @@
 <?php
 
-namespace SecretsManager\Guard;
+namespace SecretsManager\Engine;
 
+use SecretsManager\Exception\AlgorithmNotSupportedException;
+use SecretsManager\Exception\NoSecurityKeyException;
 use SecretsManager\FileAccess\DeleteFiles;
 use SecretsManager\FileAccess\ReadFiles;
-use SecretsManager\Key\SecretKey;
+use SecretsManager\SecurityKey\KeyVault;
 use SecretsManager\SecretsConfig;
 
-class Encrypt extends Guard
+class Encrypt extends Engine
 {
 
     public function encryptSingleToken(string $token, string $value): void
@@ -38,21 +40,26 @@ class Encrypt extends Guard
 
     protected function encryptValue(string $value): string
     {
-        $secret = (new SecretKey())->retrieve();
+        $secret = (new KeyVault())->retrieve();
         $algo = SecretsConfig::get('encrypt.algorithm');
 
         if (empty($secret)) {
-            throw new \Exception("Secret key empty, it's needed to encrypt tokens");
+            throw new NoSecurityKeyException();
         }
 
-        if (!in_array($algo, openssl_get_cipher_methods(true), true)) {
-            throw new \Exception('Unknown algorithm [in config.yaml]. For a list of supported algorithms visit: (https://secure.php.net/manual/en/function.openssl-get-cipher-methods.php)');
+        if (!$this->algorithmSupported($algo)) {
+            throw new AlgorithmNotSupportedException();
         }
 
         $iv = openssl_random_pseudo_bytes(16);
         $encrypted = openssl_encrypt($value, $algo, hex2bin($secret), OPENSSL_RAW_DATA, $iv);
 
         return base64_encode($iv . $encrypted);
+    }
+
+    private function algorithmSupported(string $algo): bool
+    {
+        return in_array($algo, openssl_get_cipher_methods(true), true);
     }
 
 }

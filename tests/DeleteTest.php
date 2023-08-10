@@ -2,9 +2,10 @@
 
 namespace Tests;
 
+use SecretsManager\Exception\NoSecretTokenException;
 use SecretsManager\FileAccess\ReadFiles;
-use SecretsManager\Guard\Delete;
-use SecretsManager\Guard\Encrypt;
+use SecretsManager\Engine\Delete;
+use SecretsManager\Engine\Encrypt;
 
 class DeleteTest extends SecretsTestCase
 {
@@ -29,7 +30,7 @@ class DeleteTest extends SecretsTestCase
 
     public function testDeleteNotFound()
     {
-        $this->expectExceptionMessageMatches('/not exist/');
+        $this->expectException(NoSecretTokenException::class);
 
         $app = "secrets-app";
         $env = "test";

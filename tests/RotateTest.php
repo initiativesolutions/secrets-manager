@@ -2,10 +2,11 @@
 
 namespace Tests;
 
-use SecretsManager\Guard\Encrypt;
-use SecretsManager\Guard\Retrieve;
-use SecretsManager\Guard\Rotate;
-use SecretsManager\Key\SecretKey;
+use SecretsManager\Engine\Encrypt;
+use SecretsManager\Engine\Retrieve;
+use SecretsManager\Engine\Rotate;
+use SecretsManager\Exception\NoSecurityKeyException;
+use SecretsManager\SecurityKey\KeyVault;
 use SecretsManager\Provider\SecretsProvider;
 
 class RotateTest extends SecretsTestCase
@@ -21,7 +22,7 @@ class RotateTest extends SecretsTestCase
         $encrypt = new Encrypt($app, $env);
         $encrypt->encryptSingleToken($token, $value);
 
-        $firstSecretKey = (new SecretKey())->retrieve();
+        $firstSecretKey = (new KeyVault())->retrieve();
         $firstTokenValue = array_values((new Retrieve($app, $env))->getTokens())[0];
 
         $this->assertNotEmpty($firstSecretKey);
@@ -29,7 +30,7 @@ class RotateTest extends SecretsTestCase
 
         (new Rotate())->rotate();
 
-        $secondSecretKey = (new SecretKey())->retrieve();
+        $secondSecretKey = (new KeyVault())->retrieve();
         $secondTokens = (new Retrieve($app, $env))->getTokens();
         $secondTokenValue = array_values($secondTokens)[0];
 
@@ -39,9 +40,16 @@ class RotateTest extends SecretsTestCase
         $this->assertNotSame($firstTokenValue, $secondTokenValue);
 
         $decryptedTokens = (new SecretsProvider())
-            ->decryptWithValues($secondSecretKey, $secondTokens);
+            ->decryptByTokens($secondSecretKey, $secondTokens);
 
         $this->assertSame([$token => $value], $decryptedTokens);
+    }
+
+    public function testRotateException()
+    {
+        $this->expectException(NoSecurityKeyException::class);
+
+        (new Rotate())->rotate();
     }
 
 }

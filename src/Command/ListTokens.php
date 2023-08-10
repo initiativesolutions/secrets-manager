@@ -2,7 +2,8 @@
 
 namespace SecretsManager\Command;
 
-use SecretsManager\Guard\Retrieve;
+use SecretsManager\Engine\Retrieve;
+use SecretsManager\Exception\CommandOptionMissingException;
 
 class ListTokens implements CommandInterface
 {
@@ -19,11 +20,11 @@ class ListTokens implements CommandInterface
         $opts = $this->cli->getOpts();
 
         if (!array_key_exists('app', $opts)) {
-            throw new \Exception('[app] option is missing !');
+            throw new CommandOptionMissingException("app");
         }
 
         if (!array_key_exists('env', $opts)) {
-            throw new \Exception('[env] option is missing !');
+            throw new CommandOptionMissingException("env");
         }
 
         $retrieve = new Retrieve($opts['app'], $opts['env']);

@@ -1,24 +1,25 @@
 <?php
 
-namespace SecretsManager\Guard;
+namespace SecretsManager\Engine;
 
+use SecretsManager\Exception\ConfigKeyMissingException;
 use SecretsManager\FileAccess\ReadFiles;
 use SecretsManager\FileAccess\WriteFiles;
 use SecretsManager\SecretsConfig;
 
-abstract class Guard
+abstract class Engine
 {
     protected string $app;
     protected string $env;
     protected string $filePath;
 
-    public function __construct(string $app, string $env)
+    public function __construct(string $app = "", string $env = "")
     {
         $this->app = $app;
         $this->env = $env;
     }
 
-    public function setFilePath(string $filePath): Guard
+    public function setFilePath(string $filePath): Engine
     {
         $this->filePath = $filePath;
         return $this;
@@ -31,7 +32,7 @@ abstract class Guard
             $prefix = SecretsConfig::get('secrets_files.prefix');
 
             if (empty($location)) {
-                throw new \Exception("Location for saving secrets files is empty from config.yaml [missing secrets_files.location]");
+                throw new ConfigKeyMissingException("secrets_files.location");
             }
 
             $this->filePath = rtrim($location, '/') . "/$prefix{$this->env}_$this->app.json";

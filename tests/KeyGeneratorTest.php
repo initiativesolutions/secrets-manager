@@ -2,14 +2,14 @@
 
 namespace Tests;
 
-use SecretsManager\Key\SecretKey;
+use SecretsManager\SecurityKey\KeyVault;
 
 class KeyGeneratorTest extends SecretsTestCase
 {
 
     public function testGenerate()
     {
-        $keygen = new SecretKey();
+        $keygen = new KeyVault();
         $filePath = $keygen->getKeyFilePath();
 
         $keygen->generate();
@@ -20,7 +20,7 @@ class KeyGeneratorTest extends SecretsTestCase
 
     public function testRetrieve()
     {
-        $keygen = new SecretKey();
+        $keygen = new KeyVault();
         $keygen->generate();
         $key = $keygen->retrieve();
 
