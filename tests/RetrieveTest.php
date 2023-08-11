@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use SecretsManager\Engine\Encrypt;
-use SecretsManager\Engine\Retrieve;
+
+use SecretsManager\SecretsEngine\SecretsEngine;
 
 class RetrieveTest extends SecretsTestCase
 {
@@ -14,14 +14,13 @@ class RetrieveTest extends SecretsTestCase
         $env = "test";
         $tokens = ["BITBUCKET" => "123456", "NPM" => "456789", "INSEE" => "986456"];
 
-        $encrypt = new Encrypt($app, $env);
+        $engine = new SecretsEngine($app, $env);
 
         foreach ($tokens as $token => $value) {
-            $encrypt->encryptSingleToken($token, $value);
+            $engine->encryptSingleToken($token, $value);
         }
 
-        $retrieve = new Retrieve($app, $env);
-        $data = $retrieve->getTokens();
+        $data = $engine->getTokens();
 
         foreach ($tokens as $token => $value) {
             $this->assertArrayHasKey($token, $data);

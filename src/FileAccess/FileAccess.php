@@ -4,15 +4,20 @@ namespace SecretsManager\FileAccess;
 
 use SecretsManager\Exception\NoFilePermissionException;
 
-class ReadFiles implements FileAccessInterface
+class FileAccess
 {
 
-    private string $mode = 'r';
     private string $filePath;
+    private string $data = '';
 
-    public function setFilePath(string $filePath): ReadFiles
+    public function __construct(string $filePath)
     {
         $this->filePath = $filePath;
+    }
+
+    public function setData(string $data): FileAccess
+    {
+        $this->data = $data;
         return $this;
     }
 
@@ -21,10 +26,31 @@ class ReadFiles implements FileAccessInterface
         return $this->filePath;
     }
 
-    public function setAccessMode(string $mode): ReadFiles
+    public function save(): void
     {
-        $this->mode = $mode;
-        return $this;
+        $directory = dirname($this->filePath);
+
+        if (!is_dir($directory)) {
+            $success = mkdir($directory, 0777, true);
+
+            if (!$success) {
+                throw new NoFilePermissionException("You don't have the permission to use mkdir [$this->filePath]");
+            }
+        }
+
+        $stream = fopen($this->filePath, 'w');
+
+        if (!$stream) {
+            throw new NoFilePermissionException("You don't have the permission to write to this file [$this->filePath]");
+        }
+
+        fwrite($stream, $this->data);
+        fclose($stream);
+    }
+
+    public function delete(): void
+    {
+        unlink($this->filePath);
     }
 
     public function read(): string
@@ -33,7 +59,7 @@ class ReadFiles implements FileAccessInterface
             throw new NoFilePermissionException("You can't read, filePath wrong or file not exist [$this->filePath]");
         }
 
-        $handle = fopen($this->filePath, $this->mode);
+        $handle = fopen($this->filePath, 'r');
         $contents = ($size = filesize($this->filePath)) ? fread($handle, $size) : "";
         fclose($handle);
 
@@ -55,15 +81,15 @@ class ReadFiles implements FileAccessInterface
 
     /**
      * @param string $directory path to directory
-     * @return ReadFiles[] array of each file with data
+     * @return FileAccess[] array of each file with data
      */
-    public static function getReadableFiles(string $directory): array
+    public static function getDirectoryFilesAccess(string $directory): array
     {
         $data = [];
 
         if (is_dir($directory)) {
             $data = array_map(
-                fn($file) => (new self())->setFilePath(rtrim($directory, '/') . '/' . $file),
+                fn($file) => new self(rtrim($directory, '/') . '/' . $file),
                 array_diff(scandir($directory), ['.', '..'])
             );
         }

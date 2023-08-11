@@ -3,8 +3,7 @@
 namespace SecretsManager\SecurityKey;
 
 use SecretsManager\Exception\ConfigKeyMissingException;
-use SecretsManager\FileAccess\ReadFiles;
-use SecretsManager\FileAccess\WriteFiles;
+use SecretsManager\FileAccess\FileAccess;
 use SecretsManager\SecretsConfig;
 
 class KeyVault
@@ -28,8 +27,7 @@ class KeyVault
 
     public function retrieve($generateIfEmpty = true): string
     {
-        $storage = (new ReadFiles())
-            ->setFilePath($this->getKeyFilePath());
+        $storage = new FileAccess($this->getKeyFilePath());
 
         if (!$storage->fileExist()) {
             if ($generateIfEmpty) {
@@ -47,9 +45,8 @@ class KeyVault
         $filePath = $this->getKeyFilePath();
         $encryptionKey = bin2hex(random_bytes(32));
 
-        (new WriteFiles())
+        (new FileAccess($filePath))
             ->setData($encryptionKey)
-            ->setFilePath($filePath)
             ->save();
         
         return $filePath;

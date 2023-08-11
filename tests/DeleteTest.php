@@ -3,9 +3,8 @@
 namespace Tests;
 
 use SecretsManager\Exception\NoSecretTokenException;
-use SecretsManager\FileAccess\ReadFiles;
-use SecretsManager\Engine\Delete;
-use SecretsManager\Engine\Encrypt;
+use SecretsManager\FileAccess\FileAccess;
+use SecretsManager\SecretsEngine\SecretsEngine;
 
 class DeleteTest extends SecretsTestCase
 {
@@ -18,11 +17,10 @@ class DeleteTest extends SecretsTestCase
 
         $file = $this->createSecrets($app, $env, $token, "123456");
 
-        $delete = new Delete($app, $env);
-        $delete->delete($token);
+        $engine = new SecretsEngine($app, $env);
+        $engine->delete($token);
 
-        $secrets = (new ReadFiles())
-            ->setFilePath($file)
+        $secrets = (new FileAccess($file))
             ->readJson();
 
         $this->assertArrayNotHasKey($token, $secrets);
@@ -37,17 +35,17 @@ class DeleteTest extends SecretsTestCase
 
         $this->createSecrets($app, $env, "BITBUCKET", "123456");
 
-        $delete = new Delete($app, $env);
-        $delete->delete("GITHUB");
+        $engine = new SecretsEngine($app, $env);
+        $engine->delete("GITHUB");
 
     }
 
     private function createSecrets(string $app, string $env, string $token, string $value): string
     {
-        $encrypt = (new Encrypt($app, $env));
-        $encrypt->encryptSingleToken($token, $value);
+        $engine = (new SecretsEngine($app, $env));
+        $engine->encryptSingleToken($token, $value);
 
-        return $encrypt->getFilePath();
+        return $engine->getFilePath();
     }
 
 }

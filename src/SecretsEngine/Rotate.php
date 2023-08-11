@@ -1,9 +1,9 @@
 <?php
 
-namespace SecretsManager\Engine;
+namespace SecretsManager\SecretsEngine;
 
 use SecretsManager\Exception\NoSecurityKeyException;
-use SecretsManager\FileAccess\ReadFiles;
+use SecretsManager\FileAccess\FileAccess;
 use SecretsManager\SecurityKey\KeyVault;
 use SecretsManager\Provider\SecretsProvider;
 use SecretsManager\SecretsConfig;
@@ -23,13 +23,13 @@ class Rotate
         $secretKeyManager->generate();
 
         $tokensLocation = SecretsConfig::get('secrets_files.location');
-        $tokensFiles = ReadFiles::getReadableFiles($tokensLocation);
+        $tokensFiles = FileAccess::getDirectoryFilesAccess($tokensLocation);
 
         foreach ($tokensFiles as $file) {
             $decryptedTokens = (new SecretsProvider())
                 ->decryptByTokens($oldSecretKey, $file->readJson());
 
-            $encryption = (new Encrypt("", ""))
+            $encryption = (new SecretsEngine())
                 ->setFilePath($file->getFilePath());
 
             foreach ($decryptedTokens as $token => $value) {

@@ -2,7 +2,7 @@
 
 namespace SecretsManager\Command;
 
-use SecretsManager\Engine\Rotate;
+use SecretsManager\SecretsEngine\Rotate;
 
 class Rotation implements CommandInterface
 {

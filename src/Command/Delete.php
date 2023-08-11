@@ -2,9 +2,9 @@
 
 namespace SecretsManager\Command;
 
-use SecretsManager\Engine\Delete as DeleteEngine;
 use SecretsManager\Exception\CommandArgumentMissingException;
 use SecretsManager\Exception\CommandOptionMissingException;
+use SecretsManager\SecretsEngine\SecretsEngine;
 
 class Delete implements CommandInterface
 {
@@ -34,9 +34,9 @@ class Delete implements CommandInterface
         }
 
         $token = array_shift($args);
-        $delete = (new DeleteEngine($opts['app'], $opts['env']));
-        $delete->delete($token);
+        $engine = new SecretsEngine($opts['app'], $opts['env']);
+        $engine->delete($token);
 
-        $this->cli->success("Token [$token] has been deleted from [{$delete->getFilePath()}]");
+        $this->cli->success("Token [$token] has been deleted from [{$engine->getFilePath()}]");
     }
 }

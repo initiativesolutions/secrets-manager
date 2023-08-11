@@ -2,8 +2,8 @@
 
 namespace SecretsManager\Command;
 
-use SecretsManager\Engine\Retrieve;
 use SecretsManager\Exception\CommandOptionMissingException;
+use SecretsManager\SecretsEngine\SecretsEngine;
 
 class ListTokens implements CommandInterface
 {
@@ -27,10 +27,10 @@ class ListTokens implements CommandInterface
             throw new CommandOptionMissingException("env");
         }
 
-        $retrieve = new Retrieve($opts['app'], $opts['env']);
-        $tokens = $retrieve->getTokens();
+        $engine = new SecretsEngine($opts['app'], $opts['env']);
+        $tokens = $engine->getTokens();
 
-        $this->cli->info("Below the list of all tokens in [{$retrieve->getFilePath()}]");
+        $this->cli->info("Below the list of all tokens in [{$engine->getFilePath()}]");
 
         foreach ($tokens as $token => $value) {
             $this->cli->write("- $token");

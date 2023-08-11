@@ -2,8 +2,7 @@
 
 namespace Tests;
 
-use SecretsManager\FileAccess\ReadFiles;
-use SecretsManager\FileAccess\WriteFiles;
+use SecretsManager\FileAccess\FileAccess;
 
 class FileAccessTest extends SecretsTestCase
 {
@@ -20,8 +19,7 @@ class FileAccessTest extends SecretsTestCase
 
         $this->createAndAssertFile($random, $filePath);
 
-        $data = (new ReadFiles())
-            ->setFilePath($filePath)
+        $data = (new FileAccess($filePath))
             ->read();
 
         $this->assertEquals($random, $data);
@@ -33,8 +31,7 @@ class FileAccessTest extends SecretsTestCase
 
         $this->createAndAssertFile("", $filePath);
 
-        $data = (new ReadFiles())
-            ->setFilePath($filePath)
+        $data = (new FileAccess($filePath))
             ->read();
 
         $this->assertEquals("", $data);
@@ -47,8 +44,7 @@ class FileAccessTest extends SecretsTestCase
 
         $this->createAndAssertFile(json_encode($jsonData), $filePath);
 
-        $data = (new ReadFiles())
-            ->setFilePath($filePath)
+        $data = (new FileAccess($filePath))
             ->readJson();
 
         $this->assertEquals($jsonData, $data);
@@ -56,9 +52,8 @@ class FileAccessTest extends SecretsTestCase
 
     private function createAndAssertFile($data, $filePath)
     {
-        (new WriteFiles())
+        (new FileAccess($filePath))
             ->setData($data)
-            ->setFilePath($filePath)
             ->save();
 
         $this->assertFileExists($filePath);

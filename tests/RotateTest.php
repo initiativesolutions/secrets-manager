@@ -2,10 +2,9 @@
 
 namespace Tests;
 
-use SecretsManager\Engine\Encrypt;
-use SecretsManager\Engine\Retrieve;
-use SecretsManager\Engine\Rotate;
+use SecretsManager\SecretsEngine\Rotate;
 use SecretsManager\Exception\NoSecurityKeyException;
+use SecretsManager\SecretsEngine\SecretsEngine;
 use SecretsManager\SecurityKey\KeyVault;
 use SecretsManager\Provider\SecretsProvider;
 
@@ -19,11 +18,11 @@ class RotateTest extends SecretsTestCase
         $token = "GITHUB_TOKEN";
         $value = "123456";
 
-        $encrypt = new Encrypt($app, $env);
-        $encrypt->encryptSingleToken($token, $value);
+        $engine = new SecretsEngine($app, $env);
+        $engine->encryptSingleToken($token, $value);
 
         $firstSecretKey = (new KeyVault())->retrieve();
-        $firstTokenValue = array_values((new Retrieve($app, $env))->getTokens())[0];
+        $firstTokenValue = array_values($engine->getTokens())[0];
 
         $this->assertNotEmpty($firstSecretKey);
         $this->assertNotEmpty($firstTokenValue);
@@ -31,7 +30,7 @@ class RotateTest extends SecretsTestCase
         (new Rotate())->rotate();
 
         $secondSecretKey = (new KeyVault())->retrieve();
-        $secondTokens = (new Retrieve($app, $env))->getTokens();
+        $secondTokens = $engine->getTokens();
         $secondTokenValue = array_values($secondTokens)[0];
 
         $this->assertNotEmpty($secondSecretKey);

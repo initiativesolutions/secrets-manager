@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use SecretsManager\Engine\Encrypt;
+use SecretsManager\SecretsEngine\SecretsEngine;
 
 class EncryptionTest extends SecretsTestCase
 {
@@ -14,10 +14,10 @@ class EncryptionTest extends SecretsTestCase
         $token = "GITHUB_TOKEN";
         $value = "123456";
 
-        $encrypt = new Encrypt($app, $env);
-        $encrypt->encryptSingleToken($token, $value);
+        $engine = new SecretsEngine($app, $env);
+        $engine->encryptSingleToken($token, $value);
 
-        $this->assertSecretsFile($encrypt, [$token]);
+        $this->assertSecretsFile($engine, [$token]);
     }
 
     public function testEncryptJsonFile()
@@ -29,10 +29,10 @@ class EncryptionTest extends SecretsTestCase
 
         file_put_contents($filePath, json_encode($tokens));
 
-        $encrypt = new Encrypt($app, $env);
-        $encrypt->encryptJsonFile($filePath);
+        $engine = new SecretsEngine($app, $env);
+        $engine->encryptJsonFile($filePath);
 
-        $this->assertSecretsFile($encrypt, array_keys($tokens));
+        $this->assertSecretsFile($engine, array_keys($tokens));
     }
 
     public function testEncryptJsonFileAndDelete()
@@ -44,8 +44,8 @@ class EncryptionTest extends SecretsTestCase
 
         file_put_contents($filePath, json_encode($tokens));
 
-        $encrypt = new Encrypt($app, $env);
-        $encrypt->encryptJsonFile($filePath, true);
+        $engine = new SecretsEngine($app, $env);
+        $engine->encryptJsonFile($filePath, true);
 
         $this->assertFileDoesNotExist($filePath);
     }
@@ -59,21 +59,21 @@ class EncryptionTest extends SecretsTestCase
         $secondToken = "NPM_TOKEN";
         $secondValue = "PDKJ-5955-UDHJU";
 
-        $encrypt = new Encrypt($app, $env);
+        $engine = new SecretsEngine($app, $env);
         // first time
-        $encrypt->encryptSingleToken($firstToken, $firstValue);
+        $engine->encryptSingleToken($firstToken, $firstValue);
 
-        $this->assertSecretsFile($encrypt, [$firstToken]);
+        $this->assertSecretsFile($engine, [$firstToken]);
 
         // second time
-        $encrypt->encryptSingleToken($secondToken, $secondValue);
+        $engine->encryptSingleToken($secondToken, $secondValue);
 
-        $this->assertSecretsFile($encrypt, [$firstToken, $secondToken]);
+        $this->assertSecretsFile($engine, [$firstToken, $secondToken]);
     }
 
-    private function assertSecretsFile(Encrypt $encrypt, array $tokens)
+    private function assertSecretsFile(SecretsEngine $engine, array $tokens)
     {
-        $filePath = $encrypt->getFilePath();
+        $filePath = $engine->getFilePath();
 
         $this->assertFileExists($filePath);
         $this->assertFileIsReadable($filePath);

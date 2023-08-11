@@ -2,9 +2,9 @@
 
 namespace SecretsManager\Command;
 
-use SecretsManager\Engine\Encrypt;
 use SecretsManager\Exception\CommandIncompleteException;
 use SecretsManager\Exception\CommandOptionMissingException;
+use SecretsManager\SecretsEngine\SecretsEngine;
 use SecretsManager\SecurityKey\KeyVault;
 
 class Encryption implements CommandInterface
@@ -34,17 +34,17 @@ class Encryption implements CommandInterface
             throw new CommandIncompleteException("Token name (as an argument) or file (as --file option) not found !");
         }
 
-        $encrypt = new Encrypt($opts['app'], $opts['env']);
+        $engine = new SecretsEngine($opts['app'], $opts['env']);
 
         if (!empty($opts['file'])) {
-            $encrypt->encryptJsonFile($opts['file'], isset($opts['remove-file']));
+            $engine->encryptJsonFile($opts['file'], isset($opts['remove-file']));
         } else {
             $token = array_shift($args);
             $value = $this->cli->read("Set value for [$token] : ");
-            $encrypt->encryptSingleToken($token, $value);
+            $engine->encryptSingleToken($token, $value);
         }
 
-        $this->cli->success("Success ! Secrets saved here [{$encrypt->getFilePath()}]");
+        $this->cli->success("Success! Secrets saved here [{$engine->getFilePath()}]");
 
         $secretKeyPath = (new KeyVault())->getKeyFilePath();
 
