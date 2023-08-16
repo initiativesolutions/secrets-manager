@@ -58,7 +58,7 @@ Here are the available commands in the application:
 
 - `bin/secretctl help`: See help for all commands
 
-> If you have a problem when running `bin/secretctl` then run : `dos2unix bin/secretctl` or `chmod +x bin/secretctl`
+> If you have a problem when running `bin/secretctl` then run : `chmod +x bin/secretctl && sed -i -e 's/\r$//' bin/secretctl`
 
 ### For tokens provider
 
