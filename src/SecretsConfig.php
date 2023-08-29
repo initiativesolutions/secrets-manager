@@ -8,11 +8,11 @@ use Symfony\Component\Yaml\Yaml;
 class SecretsConfig
 {
 
-    public static string $configPath = __DIR__ . '/../config.yaml';
+    public static string $configPath;
 
     public static function get(string $key): ?string
     {
-        $config = Yaml::parseFile(self::$configPath);
+        $config = Yaml::parseFile(self::getConfigPath());
         $explode = explode('.', $key);
 
         foreach ($explode as $k) {
@@ -24,6 +24,15 @@ class SecretsConfig
         }
 
         return $config;
+    }
+
+    public static function getConfigPath(): string
+    {
+        if (!empty(self::$configPath)) {
+            return self::$configPath;
+        }
+
+        return $_SERVER['HOME'] . '/.config/secretsmanager.yaml';
     }
 
 }
