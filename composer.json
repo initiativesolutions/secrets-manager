@@ -1,7 +1,7 @@
 {
   "name": "initiativesolutions/secrets-manager",
   "description": "Encrypt sensitive app data",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {

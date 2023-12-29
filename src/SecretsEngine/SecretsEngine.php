@@ -57,7 +57,7 @@ class SecretsEngine
 
         $secrets = array_map(fn ($value) => Guard::encryptValue($value), $tokens);
 
-        $this->save($secrets);
+        $this->save(array_merge($this->getTokens(), $secrets));
 
         if ($removeFile) {
             $fileAccess->delete();
